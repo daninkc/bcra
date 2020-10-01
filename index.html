@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <title>AJAX usando la funcion $.ajax() de JQuery - AleDC </title>
+</head>
+
+<body>
+
+        <!-- 
+            El siguiente código conecta contra la API del BCRA para consultar la cotización del dolar, y luego la imprime en pantalla.
+            Se usa AJAX con Jquery.
+         -->
+
+
+
+    <button id="boton">Leer Api BCRA</button>
+
+    <!-- div principal en donde se dibujara los datos de la API -->
+    <div id="lista-api"></div>
+
+
+    <script>
+
+        let apiKey = 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MzMxMTU1NDIsInR5cGUiOiJleHRlcm5hbCIsInVzZXIiOiJkYW5pLmVsZW4ud2lsbGlhbXNAZ21haWwuY29tIn0.0KsET-nc0_oVukLRAG5rq9U8J8wZv0vYgSlGjHmXAL-qh-oOFqGTmXXFfN-XcUQU-_96-efL1_JMAFZa1dU2Tg';
+        // asocia al evento click del boton la funcion leerApi 
+        $("#boton").on("click", leerApi);
+
+
+        function leerApi() {
+            alert('Llamando a la API del BCRA, espere un cachito');
+
+            $.ajax({
+                url: 'http://api.estadisticasbcra.com/usd_of?Authorization=Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MzMxMTU1NDIsInR5cGUiOiJleHRlcm5hbCIsInVzZXIiOiJkYW5pLmVsZW4ud2lsbGlhbXNAZ21haWwuY29tIn0.0KsET-nc0_oVukLRAG5rq9U8J8wZv0vYgSlGjHmXAL-qh-oOFqGTmXXFfN-XcUQU-_96-efL1_JMAFZa1dU2Tg',
+                type: 'GET',
+                data:{d: "2004-12-31"},
+                // con la propiedad beforeSend le paso el tipo de autorizacion, en este caso será 'Bearer'  y luego el token que registré en el BCRA
+
+                // si la conexion es exitosa, ejecutará la función "respuesta", definida allí mismo.
+                success: function (respuesta) {
+
+                    // imprimo el valor de respuesta en la consola, para debug.
+                    console.log(respuesta);
+
+                    // creo una variable "listaAPI y le asigno el DIV que definí arriba, con el "id:lista-api".
+                    var listaAPI = $("#lista-api");
+
+                    $.each(respuesta, function (index, miembro) {
+                        listaAPI.append(
+                            '<div>' +
+                            '<p>' + 'Fecha Cotizacion: ' + miembro.d + '<br>' +
+                            'Importe: $ ' + miembro.v + '<br>' +
+                            '<br>' + '______________________________________' +
+                            '</div>'
+                        );
+                    });
+                }, //fin function respuesta
+
+                error: function () {
+                    alert("Hubo un error");
+                    console.log("Error al leer la API");
+                }
+
+            });
+        }
+    </script>
+
+</body>
+
+</html>
